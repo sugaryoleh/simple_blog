@@ -24,4 +24,7 @@ def create_app(test_config=None):
     def test():
         return 'App is running!'
 
+    from . import db
+    db.init_app(app)
+
     return app
