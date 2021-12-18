@@ -23,8 +23,8 @@ def register():
         if error is None:
             db = get_db()
             try:
-                db.execute('insert into user (username, password) values (?, ?)', username,
-                           generate_password_hash(password))
+                db.execute('insert into user (username, password) values (?, ?)', (username,
+                           generate_password_hash(password)))
                 db.commit()
             except db.InternalError:
                 error = f'User with {username} already exists'
@@ -63,6 +63,16 @@ def login():
         flash(error)
 
     return render_template('auth/login.html')
+
+
+@bp.before_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute('select * from user where id = ?', (user_id,)).fetchone()
 
 
 @bp.route('/logout')

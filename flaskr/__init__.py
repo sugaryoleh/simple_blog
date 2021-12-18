@@ -20,7 +20,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/test')
+    @app.route('/')
     def test():
         return 'App is running!'
 
